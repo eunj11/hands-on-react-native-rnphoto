@@ -9,6 +9,13 @@ import MainStack from './MainStack';
 import { onAuthStateChanged } from '../api/auth';
 import ContentTab from './ContentTab';
 
+const ImageAssets = [
+  require('../../assets/cover.png'),
+  require('../../assets/home-clock.png'),
+  require('../../assets/home-map.png'),
+  require('../../assets/icon.png'),
+];
+
 const Navigation = () => {
   const [user, setUser] = useUserState();
   const [isReady, setIsReady] = useState(false);
@@ -17,6 +24,11 @@ const Navigation = () => {
     (async () => {
       try {
         await SplashScreen.preventAutoHideAsync();
+
+        await Promise.all(
+          ImageAssets.map((image) => Asset.fromModule(image).downloadAsync())
+        );
+
         await Asset.fromModule(
           require('../../assets/cover.png')
         ).downloadAsync();
@@ -48,7 +60,7 @@ const Navigation = () => {
 
   return (
     <NavigationContainer onReady={onReady}>
-      {user.uid ? <ContentTab /> : <AuthStack />}
+      {user.uid ? <MainStack /> : <AuthStack />}
     </NavigationContainer>
   );
 };
